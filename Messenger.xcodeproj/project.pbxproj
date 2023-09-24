@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		75424AED2ABCDC9D00282BAA /* FacebookBasics in Frameworks */ = {isa = PBXBuildFile; productRef = 75424AEC2ABCDC9D00282BAA /* FacebookBasics */; };
+		75424AEF2ABCDC9D00282BAA /* FacebookCore in Frameworks */ = {isa = PBXBuildFile; productRef = 75424AEE2ABCDC9D00282BAA /* FacebookCore */; };
+		75424AF12ABCDC9D00282BAA /* FacebookLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 75424AF02ABCDC9D00282BAA /* FacebookLogin */; };
 		755ACAF32AAF73A4009707D6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755ACAF22AAF73A4009707D6 /* AppDelegate.swift */; };
 		755ACAF52AAF73A4009707D6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755ACAF42AAF73A4009707D6 /* SceneDelegate.swift */; };
 		755ACAF72AAF73A4009707D6 /* ConversationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755ACAF62AAF73A4009707D6 /* ConversationsViewController.swift */; };
@@ -27,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		03921210C6339A8CC1F5D54A /* Pods-Messenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Messenger.debug.xcconfig"; path = "Target Support Files/Pods-Messenger/Pods-Messenger.debug.xcconfig"; sourceTree = "<group>"; };
+		754A75792ABBBE1800293849 /* Messenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Messenger.entitlements; sourceTree = "<group>"; };
 		755ACAEF2AAF73A4009707D6 /* Messenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Messenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		755ACAF22AAF73A4009707D6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		755ACAF42AAF73A4009707D6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -53,7 +57,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75424AF12ABCDC9D00282BAA /* FacebookLogin in Frameworks */,
 				B59AB3705B9BA5A5C1F095A4 /* Pods_Messenger.framework in Frameworks */,
+				75424AEF2ABCDC9D00282BAA /* FacebookCore in Frameworks */,
+				75424AED2ABCDC9D00282BAA /* FacebookBasics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +88,7 @@
 		755ACAF12AAF73A4009707D6 /* Messenger */ = {
 			isa = PBXGroup;
 			children = (
+				754A75792ABBBE1800293849 /* Messenger.entitlements */,
 				75B2F70F2AB5173A00F444FE /* GoogleService-Info.plist */,
 				755ACB0A2AAF7688009707D6 /* Resources */,
 				755ACB092AAF7677009707D6 /* ViewModels */,
@@ -192,6 +200,11 @@
 			dependencies = (
 			);
 			name = Messenger;
+			packageProductDependencies = (
+				75424AEC2ABCDC9D00282BAA /* FacebookBasics */,
+				75424AEE2ABCDC9D00282BAA /* FacebookCore */,
+				75424AF02ABCDC9D00282BAA /* FacebookLogin */,
+			);
 			productName = Messenger;
 			productReference = 755ACAEF2AAF73A4009707D6 /* Messenger.app */;
 			productType = "com.apple.product-type.application";
@@ -220,6 +233,9 @@
 				Base,
 			);
 			mainGroup = 755ACAE62AAF73A3009707D6;
+			packageReferences = (
+				75424AEB2ABCDC9D00282BAA /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */,
+			);
 			productRefGroup = 755ACAF02AAF73A4009707D6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -446,6 +462,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Messenger/Messenger.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VM55LWG8PP;
@@ -455,6 +472,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -474,6 +492,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Messenger/Messenger.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VM55LWG8PP;
@@ -483,6 +502,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -518,6 +538,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		75424AEB2ABCDC9D00282BAA /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/facebook/facebook-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 14.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		75424AEC2ABCDC9D00282BAA /* FacebookBasics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75424AEB2ABCDC9D00282BAA /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookBasics;
+		};
+		75424AEE2ABCDC9D00282BAA /* FacebookCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75424AEB2ABCDC9D00282BAA /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookCore;
+		};
+		75424AF02ABCDC9D00282BAA /* FacebookLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 75424AEB2ABCDC9D00282BAA /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookLogin;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 755ACAE72AAF73A3009707D6 /* Project object */;
 }

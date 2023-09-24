@@ -38,7 +38,7 @@ extension DatabaseManager {
   
   // 3 slashes: you can add a documentation string. so, whenever you call this function, the autocomplete will show this.
   /// Inserts new user to database
-  public func insertUser(with user:  ChatAppUser) {
+  public func insertUser(with user: ChatAppUser) {
   
     database.child(user.safeEmail).setValue([
       "first_name": user.firstName,
