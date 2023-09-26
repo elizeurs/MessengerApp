@@ -8,6 +8,8 @@
 import UIKit
 import FirebaseAuth
 import FBSDKLoginKit
+import GoogleSignIn
+import FirebaseCore
 
 class LoginViewController: UIViewController {
   
@@ -73,8 +75,73 @@ class LoginViewController: UIViewController {
     return button
   }()
   
+  private let googleLogInButton: GIDSignInButton = {
+      let button = GIDSignInButton()
+      button.addTarget(self, action: #selector(signInWithGoogle), for: .touchUpInside) // Add this line
+      return button
+  }()
+
+  @objc func signInWithGoogle() {
+      // Your code to handle Google Sign-In goes here
+    guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+
+            // Create Google Sign In configuration object.
+            let config = GIDConfiguration(clientID: clientID)
+            GIDSignIn.sharedInstance.configuration = config
+            
+            GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
+                guard error == nil else { return }
+
+                guard let user = signInResult?.user,
+                      let idToken = user.idToken?.tokenString else {
+                    print("missing auth object off of google user")
+                    return
+                }
+                
+                print("did sign in with google: \(user)")
+                
+                guard let email = user.profile?.email,
+                      let firstName = user.profile?.givenName,
+                      let lastName = user.profile?.familyName else { return }
+                
+                DatabaseManager.shared.userExists(with: email) { exists in
+                    if !exists {
+                        //insert to database
+                        DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName, lastName: lastName, emailAddress: email))
+                    }
+                }
+                
+                let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: user.accessToken.tokenString)
+                // If sign in succeeded, display the app's main content View.
+                
+                FirebaseAuth.Auth.auth().signIn(with: credential) { authResult, error in
+                    guard authResult != nil, error == nil else {
+                        print("failed to log in with google credential")
+                        return
+                    }
+                    
+                    print("successfully signed in with google")
+                  
+                    NotificationCenter.default.post(name: .didLogInNotification, object: nil)
+                }
+              }
+  }
+  
+  private var loginObserver: NSObjectProtocol?
+  
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    // [weak self] - we don't want to cause a retention cycle.
+    loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main) { [weak self] _ in
+      
+      guard let strongSelf = self else {
+        return
+      }
+      
+      strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+    }
+            
     title = "Log In"
     view.backgroundColor = .white
     
@@ -99,6 +166,13 @@ class LoginViewController: UIViewController {
     scrollView.addSubview(passwordField)
     scrollView.addSubview(loginButton)
     scrollView.addSubview(facebookLoginButton)
+    scrollView.addSubview(googleLogInButton)
+  }
+  
+  deinit {
+    if let observer = loginObserver {
+      NotificationCenter.default.removeObserver(observer)
+    }
   }
   
   override func viewDidLayoutSubviews() {
@@ -128,7 +202,11 @@ class LoginViewController: UIViewController {
                                        y: loginButton.bottom+15,
                                        width: scrollView.width-60,
                                        height: 52)
-    facebookLoginButton.frame.origin.y = loginButton.bottom+20
+    
+    googleLogInButton.frame = CGRect(x: 30,
+                                       y: facebookLoginButton.bottom+15,
+                                       width: scrollView.width-60,
+                                       height: 52)
   }
   
   @objc private func loginButtonTapped() {

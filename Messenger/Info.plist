@@ -2,21 +2,35 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UISupportedInterfaceOrientations~ipad</key>
+	<key>CFBundleURLTypes</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb1380012982939403</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.433726481706-st4g8c4l02hrkfruilht798bmf0q1iuc</string>
+			</array>
+		</dict>
 	</array>
-	<key>NSCameraUsageDescription</key>
-	<string>Please allow access to take a profile picture</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Please allow access to select a photo for your profile</string>
-	<key>UISupportedInterfaceOrientations</key>
+  <key>GIDClientID</key>
+    <string>433726481706-st4g8c4l02hrkfruilht798bmf0q1iuc.apps.googleusercontent.com</string>
+	<key>FacebookAppID</key>
+	<string>1380012982939403</string>
+	<key>FacebookClientToken</key>
+	<string>efb972d0f884c64f9d0e3d2e438baaf6</string>
+	<key>FacebookDisplayName</key>
+	<string>My Messenger</string>
+	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~iphone</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
@@ -37,25 +51,5 @@
 			</array>
 		</dict>
 	</dict>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb1380012982939403</string>
-			</array>
-		</dict>
-	</array>
-	<key>FacebookAppID</key>
-	<string>1380012982939403</string>
-	<key>FacebookClientToken</key>
-	<string>efb972d0f884c64f9d0e3d2e438baaf6</string>
-	<key>FacebookDisplayName</key>
-	<string>My Messenger</string>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>fbapi</string>
-		<string>fb-messenger-share-api</string>
-	</array>
 </dict>
 </plist>
