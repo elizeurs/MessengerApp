@@ -10,8 +10,11 @@ import FirebaseAuth
 import FBSDKLoginKit
 import GoogleSignIn
 import FirebaseCore
+import JGProgressHUD
 
 class LoginViewController: UIViewController {
+  
+  private let spinner = JGProgressHUD(style: .dark)
   
   private let scrollView: UIScrollView = {
     let scrollView = UIScrollView()
@@ -219,10 +222,18 @@ class LoginViewController: UIViewController {
       return
     }
     
+    spinner.show(in: view)
+    
     // firebase log in
     FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password, completion: { [weak self] authResult, error in
       guard let strongSelf = self else {
         return
+      }
+      
+      
+      // whenever you do anything user interface related, you need to do it on the main thread.
+      DispatchQueue.main.async {
+        strongSelf.spinner.dismiss()
       }
       
       guard let result = authResult, error == nil else {

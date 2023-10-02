@@ -8,6 +8,15 @@
         "revision" : "c19607d535864533523d1f437c84035e5fb101cf",
         "version" : "14.1.0"
       }
+    },
+    {
+      "identity" : "jgprogresshud",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/JonasGessner/JGProgressHUD.git",
+      "state" : {
+        "revision" : "78d7cd35f1d90ff74fd82e486f2cbe4b24be8cf9",
+        "version" : "2.2.0"
+      }
     }
   ],
   "version" : 2

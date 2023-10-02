@@ -22,6 +22,8 @@
 		755ACB132AAF79EE009707D6 /* VideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755ACB122AAF79EE009707D6 /* VideoPlayerViewController.swift */; };
 		755ACB152AAF7A52009707D6 /* NewConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755ACB142AAF7A52009707D6 /* NewConversationViewController.swift */; };
 		755ACB172AAF7A6A009707D6 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755ACB162AAF7A6A009707D6 /* ProfileViewController.swift */; };
+		755C1AA32AC9DBD40061204C /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 755C1AA22AC9DBD40061204C /* JGProgressHUD */; };
+		755C1AA52AC9E3000061204C /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755C1AA42AC9E3000061204C /* ChatViewController.swift */; };
 		755D1DB02AB754E500E057EA /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755D1DAF2AB754E500E057EA /* DatabaseManager.swift */; };
 		75B2F7102AB5173B00F444FE /* GoogleService-Info.plistBACKUP in Resources */ = {isa = PBXBuildFile; fileRef = 75B2F70F2AB5173A00F444FE /* GoogleService-Info.plistBACKUP */; };
 		75B985FA2AC1FF0B00C2DB58 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75B985F92AC1FF0B00C2DB58 /* GoogleService-Info.plist */; };
@@ -46,6 +48,7 @@
 		755ACB122AAF79EE009707D6 /* VideoPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewController.swift; sourceTree = "<group>"; };
 		755ACB142AAF7A52009707D6 /* NewConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationViewController.swift; sourceTree = "<group>"; };
 		755ACB162AAF7A6A009707D6 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		755C1AA42AC9E3000061204C /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		755D1DAF2AB754E500E057EA /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		75B2F70F2AB5173A00F444FE /* GoogleService-Info.plistBACKUP */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "GoogleService-Info.plistBACKUP"; sourceTree = "<group>"; };
 		75B985F92AC1FF0B00C2DB58 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -63,6 +66,7 @@
 				B59AB3705B9BA5A5C1F095A4 /* Pods_Messenger.framework in Frameworks */,
 				75424AEF2ABCDC9D00282BAA /* FacebookCore in Frameworks */,
 				75424AED2ABCDC9D00282BAA /* FacebookBasics in Frameworks */,
+				755C1AA32AC9DBD40061204C /* JGProgressHUD in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +116,7 @@
 				755ACB122AAF79EE009707D6 /* VideoPlayerViewController.swift */,
 				755ACB142AAF7A52009707D6 /* NewConversationViewController.swift */,
 				755ACB162AAF7A6A009707D6 /* ProfileViewController.swift */,
+				755C1AA42AC9E3000061204C /* ChatViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -207,6 +212,7 @@
 				75424AEC2ABCDC9D00282BAA /* FacebookBasics */,
 				75424AEE2ABCDC9D00282BAA /* FacebookCore */,
 				75424AF02ABCDC9D00282BAA /* FacebookLogin */,
+				755C1AA22AC9DBD40061204C /* JGProgressHUD */,
 			);
 			productName = Messenger;
 			productReference = 755ACAEF2AAF73A4009707D6 /* Messenger.app */;
@@ -238,6 +244,7 @@
 			mainGroup = 755ACAE62AAF73A3009707D6;
 			packageReferences = (
 				75424AEB2ABCDC9D00282BAA /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */,
+				755C1AA12AC9DBD40061204C /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
 			);
 			productRefGroup = 755ACAF02AAF73A4009707D6 /* Products */;
 			projectDirPath = "";
@@ -320,6 +327,7 @@
 				755ACAF32AAF73A4009707D6 /* AppDelegate.swift in Sources */,
 				755ACB172AAF7A6A009707D6 /* ProfileViewController.swift in Sources */,
 				755ACAF52AAF73A4009707D6 /* SceneDelegate.swift in Sources */,
+				755C1AA52AC9E3000061204C /* ChatViewController.swift in Sources */,
 				755ACB112AAF79D8009707D6 /* PhotoViewerViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -560,6 +568,14 @@
 				minimumVersion = 14.0.0;
 			};
 		};
+		755C1AA12AC9DBD40061204C /* XCRemoteSwiftPackageReference "JGProgressHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JonasGessner/JGProgressHUD.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -577,6 +593,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 75424AEB2ABCDC9D00282BAA /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
 			productName = FacebookLogin;
+		};
+		755C1AA22AC9DBD40061204C /* JGProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 755C1AA12AC9DBD40061204C /* XCRemoteSwiftPackageReference "JGProgressHUD" */;
+			productName = JGProgressHUD;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
