@@ -107,12 +107,40 @@ class LoginViewController: UIViewController {
                       let firstName = user.profile?.givenName,
                       let lastName = user.profile?.familyName else { return }
                 
-                DatabaseManager.shared.userExists(with: email) { exists in
-                    if !exists {
-                        //insert to database
-                        DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName, lastName: lastName, emailAddress: email))
+              DatabaseManager.shared.userExists(with: email) { exists in
+                if !exists {
+                  let chatUser = ChatAppUser(firstName: firstName,
+                                             lastName: lastName,
+                                             emailAddress: email)
+                  DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
+                    if success {
+                      // upload image
+                      if (((user.profile?.hasImage)) != nil) {
+                        guard let url = user.profile?.imageURL(withDimension: 200) else { return
+                        }
+                        
+                        URLSession.shared.dataTask(with: url) { data, _, _ in
+                          guard let data = data else {
+                            return
+                          }
+                          
+                          let filename = chatUser.profilePictureFileName
+                          StorageManager.shared.uploadProfilePicture(with: data, fileName: filename) { result in
+                            switch result {
+                            case .success(let downloadUrl):
+                              UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                              print(downloadUrl)
+                            case .failure(let error):
+                              print("Storage manager error: \(error)")
+                            }
+                          }
+                          // should be called ".begin, 'caude it tells the URL data task to begin.
+                        }.resume()
+                      }
                     }
-                }
+                  }
+                )}
+              }
                 
                 let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: user.accessToken.tokenString)
                 // If sign in succeeded, display the app's main content View.
@@ -289,7 +317,7 @@ extension LoginViewController: LoginButtonDelegate {
     }
     
     let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me",
-                                                     parameters: ["fields": "email, name"],
+                                                     parameters: ["fields": "email, first_name, last_name, picture.type(large)"],
                                                      tokenString: token,
                                                      version: nil,
                                                      httpMethod: .get)
@@ -301,28 +329,58 @@ extension LoginViewController: LoginButtonDelegate {
         return
       }
       
-            print("\(result)")
       
-      guard let userName = result["name"] as? String,
-            let email = result["email"] as?  String else {
-        print("Failed to get email and name from fb result")
-        return
+      // use return just for test purpose. we don't want to create user.
+//      return
+      
+      print(result)
+      guard let firstName = result["first_name"] as? String,
+            let lastName = result["last_name"] as? String,
+            let email = result["email"] as?  String,
+            let picture = result["picture"] as? [String: Any],
+            let data = picture["data"] as? [String: Any],
+            let pictureUrl = data["url"] as? String else {
+                print("Failed to get email and name from fb result")
+                return
       }
-      
-      let nameComponents = userName.components(separatedBy: " ")
-      guard nameComponents.count == 3 else {
-        return
-      }
-      
-      let firstName = nameComponents[0]
-      let lastName = nameComponents[2]
       
       DatabaseManager.shared.userExists(with: email) { exists in
         if !exists {
-          DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName,
-                                                              lastName: lastName,
-                                                              emailAddress: email))
-        }
+          let chatUser = ChatAppUser(firstName: firstName,
+                                     lastName: lastName,
+                                     emailAddress: email)
+          DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
+            if success {
+              
+              guard let url = URL(string: pictureUrl) else {
+                return
+              }
+              
+              print("Downloading data from facebook image")
+              
+              URLSession.shared.dataTask(with: url) { data, _, _ in
+                guard let data = data else {
+                  print("failed to get data from fabebook")
+                  return
+                }
+                
+                print("got data from fb, uploading...")
+                
+                // upload image
+                let filename = chatUser.profilePictureFileName
+                StorageManager.shared.uploadProfilePicture(with: data, fileName: filename) { result in
+                  switch result {
+                  case .success(let downloadUrl):
+                    UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                    print(downloadUrl)
+                  case .failure(let error):
+                    print("Storage manager error: \(error)")
+                  }
+                }
+              }.resume()
+            }
+          }
+        )}
       }
       
       let credential = FacebookAuthProvider.credential(withAccessToken: token)
