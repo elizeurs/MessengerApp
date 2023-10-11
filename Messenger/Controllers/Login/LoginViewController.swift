@@ -11,6 +11,7 @@ import FBSDKLoginKit
 import GoogleSignIn
 import FirebaseCore
 import JGProgressHUD
+import FirebaseAuth
 
 class LoginViewController: UIViewController {
   
@@ -79,83 +80,87 @@ class LoginViewController: UIViewController {
   }()
   
   private let googleLogInButton: GIDSignInButton = {
-      let button = GIDSignInButton()
-      button.addTarget(self, action: #selector(signInWithGoogle), for: .touchUpInside) // Add this line
-      return button
+    let button = GIDSignInButton()
+    button.addTarget(self, action: #selector(signInWithGoogle), for: .touchUpInside) // Add this line
+    return button
   }()
-
+  
   @objc func signInWithGoogle() {
-      // Your code to handle Google Sign-In goes here
+    // Your code to handle Google Sign-In goes here
     guard let clientID = FirebaseApp.app()?.options.clientID else { return }
-
-            // Create Google Sign In configuration object.
-            let config = GIDConfiguration(clientID: clientID)
-            GIDSignIn.sharedInstance.configuration = config
-            
-            GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
-                guard error == nil else { return }
-
-                guard let user = signInResult?.user,
-                      let idToken = user.idToken?.tokenString else {
-                    print("missing auth object off of google user")
-                    return
+    
+    // Create Google Sign In configuration object.
+    let config = GIDConfiguration(clientID: clientID)
+    GIDSignIn.sharedInstance.configuration = config
+    
+    GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
+      guard error == nil else { return }
+      
+      guard let user = signInResult?.user,
+            let idToken = user.idToken?.tokenString else {
+        print("missing auth object off of google user")
+        return
+      }
+      
+      print("did sign in with google: \(user)")
+      
+      guard let email = user.profile?.email,
+            let firstName = user.profile?.givenName,
+            let lastName = user.profile?.familyName else {
+        return
+      }
+      
+      UserDefaults.standard.set(email, forKey: "email")
+      
+      DatabaseManager.shared.userExists(with: email) { exists in
+        if !exists {
+          let chatUser = ChatAppUser(firstName: firstName,
+                                     lastName: lastName,
+                                     emailAddress: email)
+          DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
+            if success {
+              // upload image
+              if (((user.profile?.hasImage)) != nil) {
+                guard let url = user.profile?.imageURL(withDimension: 200) else { return
                 }
                 
-                print("did sign in with google: \(user)")
-                
-                guard let email = user.profile?.email,
-                      let firstName = user.profile?.givenName,
-                      let lastName = user.profile?.familyName else { return }
-                
-              DatabaseManager.shared.userExists(with: email) { exists in
-                if !exists {
-                  let chatUser = ChatAppUser(firstName: firstName,
-                                             lastName: lastName,
-                                             emailAddress: email)
-                  DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
-                    if success {
-                      // upload image
-                      if (((user.profile?.hasImage)) != nil) {
-                        guard let url = user.profile?.imageURL(withDimension: 200) else { return
-                        }
-                        
-                        URLSession.shared.dataTask(with: url) { data, _, _ in
-                          guard let data = data else {
-                            return
-                          }
-                          
-                          let filename = chatUser.profilePictureFileName
-                          StorageManager.shared.uploadProfilePicture(with: data, fileName: filename) { result in
-                            switch result {
-                            case .success(let downloadUrl):
-                              UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
-                              print(downloadUrl)
-                            case .failure(let error):
-                              print("Storage manager error: \(error)")
-                            }
-                          }
-                          // should be called ".begin, 'caude it tells the URL data task to begin.
-                        }.resume()
-                      }
+                URLSession.shared.dataTask(with: url) { data, _, _ in
+                  guard let data = data else {
+                    return
+                  }
+                  
+                  let filename = chatUser.profilePictureFileName
+                  StorageManager.shared.uploadProfilePicture(with: data, fileName: filename) { result in
+                    switch result {
+                    case .success(let downloadUrl):
+                      UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                      print(downloadUrl)
+                    case .failure(let error):
+                      print("Storage manager error: \(error)")
                     }
                   }
-                )}
+                  // should be called ".begin, 'caude it tells the URL data task to begin.
+                }.resume()
               }
-                
-                let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: user.accessToken.tokenString)
-                // If sign in succeeded, display the app's main content View.
-                
-                FirebaseAuth.Auth.auth().signIn(with: credential) { authResult, error in
-                    guard authResult != nil, error == nil else {
-                        print("failed to log in with google credential")
-                        return
-                    }
-                    
-                    print("successfully signed in with google")
-                  
-                    NotificationCenter.default.post(name: .didLogInNotification, object: nil)
-                }
-              }
+            }
+          }
+          )}
+      }
+      
+      let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: user.accessToken.tokenString)
+      // If sign in succeeded, display the app's main content View.
+      
+      FirebaseAuth.Auth.auth().signIn(with: credential) { authResult, error in
+        guard authResult != nil, error == nil else {
+          print("failed to log in with google credential")
+          return
+        }
+        
+        print("successfully signed in with google")
+        
+        NotificationCenter.default.post(name: .didLogInNotification, object: nil)
+      }
+    }
   }
   
   private var loginObserver: NSObjectProtocol?
@@ -172,7 +177,7 @@ class LoginViewController: UIViewController {
       
       strongSelf.navigationController?.dismiss(animated: true, completion: nil)
     }
-            
+    
     title = "Log In"
     view.backgroundColor = .white
     
@@ -235,9 +240,9 @@ class LoginViewController: UIViewController {
                                        height: 52)
     
     googleLogInButton.frame = CGRect(x: 30,
-                                       y: facebookLoginButton.bottom+15,
-                                       width: scrollView.width-60,
-                                       height: 52)
+                                     y: facebookLoginButton.bottom+15,
+                                     width: scrollView.width-60,
+                                     height: 52)
   }
   
   @objc private func loginButtonTapped() {
@@ -270,6 +275,9 @@ class LoginViewController: UIViewController {
       }
       
       let user = result.user
+      
+      UserDefaults.standard.set(email, forKey: "email")
+      
       print("Logged In User: \(user)")
       strongSelf.navigationController?.dismiss(animated: true, completion: nil)
     })
@@ -331,18 +339,21 @@ extension LoginViewController: LoginButtonDelegate {
       
       
       // use return just for test purpose. we don't want to create user.
-//      return
+      //      return
       
       print(result)
+      
       guard let firstName = result["first_name"] as? String,
             let lastName = result["last_name"] as? String,
             let email = result["email"] as?  String,
             let picture = result["picture"] as? [String: Any],
             let data = picture["data"] as? [String: Any],
             let pictureUrl = data["url"] as? String else {
-                print("Failed to get email and name from fb result")
-                return
+        print("Failed to get email and name from fb result")
+        return
       }
+      
+      UserDefaults.standard.set(email, forKey: "email")
       
       DatabaseManager.shared.userExists(with: email) { exists in
         if !exists {
@@ -380,7 +391,7 @@ extension LoginViewController: LoginButtonDelegate {
               }.resume()
             }
           }
-        )}
+          )}
       }
       
       let credential = FacebookAuthProvider.credential(withAccessToken: token)
