@@ -63,6 +63,7 @@ class ChatViewController: MessagesViewController {
   }()
   
   public let otherUserEmail: String
+  private let conversationId: String?
   public var isNewConversation = false
   
   private var messages = [Message]()
@@ -72,12 +73,16 @@ class ChatViewController: MessagesViewController {
       return nil
     }
     
+    let safeEmail = DatabaseManager.safeString(str: email)
+    
     return Sender(photoURL: "",
-                  senderId: email,
-                  displayName: "Joe Smith")
+                  senderId: safeEmail,
+                  displayName: "Me")
   }
   
-  init(with email: String) {
+  // id: string optional - when we are creating a new conversation, there is no identifier yet, but when we click on or tap on a conversation that's in our list it has an id and tha identifier is basically how we're going to observe on the in the database as to what things is changing.
+  init(with email: String, id: String?) {
+    self.conversationId = id
     self.otherUserEmail = email
     super.init(nibName: nil, bundle: nil)
   }
@@ -86,34 +91,64 @@ class ChatViewController: MessagesViewController {
     fatalError("init(coder:) has not been implemented")
   }
   
-    override func viewDidLoad() {
-        super.viewDidLoad()
-      
-      // mocked out some messages here
-//      messages.append(Message(sender: selfSender,
-//                              messageId: "1",
-//                              sentDate: Date(),
-//                              kind: .text("Hello world message")))
-//
-//      messages.append(Message(sender: selfSender,
-//                              messageId: "1",
-//                              sentDate: Date(),
-//                              kind: .text("Hello world message. Hello world message. Hello world message.")))
-      
-      view.backgroundColor = .systemRed
-      
-      // this MessagesViewController give us a messageCollectionView and there are 3 protocols on it that we need to assign.
-      messagesCollectionView.messagesDataSource = self
-      messagesCollectionView.messagesLayoutDelegate = self
-      messagesCollectionView.messagesDisplayDelegate = self
-      messageInputBar.delegate = self
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    // mocked out some messages here
+    //      messages.append(Message(sender: selfSender,
+    //                              messageId: "1",
+    //                              sentDate: Date(),
+    //                              kind: .text("Hello world message")))
+    //
+    //      messages.append(Message(sender: selfSender,
+    //                              messageId: "1",
+    //                              sentDate: Date(),
+    //                              kind: .text("Hello world message. Hello world message. Hello world message.")))
+    
+    view.backgroundColor = .systemRed
+    
+    // this MessagesViewController give us a messageCollectionView and there are 3 protocols on it that we need to assign.
+    messagesCollectionView.messagesDataSource = self
+    messagesCollectionView.messagesLayoutDelegate = self
+    messagesCollectionView.messagesDisplayDelegate = self
+    messageInputBar.delegate = self
+  }
+  
+  private func listenForMessages(id: String, shouldScrollToBottom: Bool) {
+    DatabaseManager.shared.getAllMessagesForConversation(with: id) { [weak self] result in
+      switch result {
+      case .success(let messages):
+        print("success in getting messages: \(messages)")
+        guard !messages.isEmpty else {
+          print("messages are empty")
+          return
+        }
+        self?.messages = messages
+        
+        DispatchQueue.main.async {
+          // .reloadDataAndKeepOffset - if the user has scrolled to the top and they're reading older messages and a new message comes in, we don't want it to scroll down, 'cause that's a pretty bad experience.
+          self?.messagesCollectionView.reloadDataAndKeepOffset()
+          
+          if shouldScrollToBottom {
+            // scrollToBottom is deprecated. scrollToLastItem, instead.
+            //
+            self?.messagesCollectionView.scrollToLastItem()
+          }
+        }
+      case .failure(let error):
+        print("failed to get messages: \(error)")
+      }
     }
+  }
   
   // because we want to present the keyboard once the view actually appeared and not in the loaded state
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     // present the keyboard by default.Chat
     messageInputBar.inputTextView.becomeFirstResponder()
+    if let conversationId = conversationId {
+      listenForMessages(id: conversationId, shouldScrollToBottom: true)
+    }
   }
 }
 
@@ -136,7 +171,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
                             messageId: messageId,
                             sentDate: Date(),
                             kind: .text(text))
-      DatabaseManager.shared.createNewConversation(with: otherUserEmail, firstMessage: message, completion: { success in
+      DatabaseManager.shared.createNewConversation(with: otherUserEmail, name: self.title ?? "User", firstMessage: message, completion: { success in
         if success {
           print("Message sent")
         }
@@ -174,7 +209,6 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
       return sender
     }
     fatalError("Self Sender is nil, email should be cached")
-    return Sender(photoURL: "", senderId: "12", displayName: "")
   }
   
   func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessageKit.MessagesCollectionView) -> MessageKit.MessageType {
