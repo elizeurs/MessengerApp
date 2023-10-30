@@ -131,7 +131,7 @@ class ChatViewController: MessagesViewController {
           
           if shouldScrollToBottom {
             // scrollToBottom is deprecated. scrollToLastItem, instead.
-            //
+            // fix: messages on the top getting behind the navigation bar.
             self?.messagesCollectionView.scrollToLastItem()
           }
         }
@@ -154,6 +154,7 @@ class ChatViewController: MessagesViewController {
 
 extension ChatViewController: InputBarAccessoryViewDelegate {
   
+  // called when the send button is clicked.
   func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
     // validate this text(string) is not empty before sending the message. so we don't wanna allow the user to send a message with just spaces in it. make sure this is not empty. otherwise we want to send message.
     guard !text.replacingOccurrences(of: " ", with: "").isEmpty,
@@ -164,16 +165,18 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
     
     print("Sending: \(text)")
     
+    let message = Message(sender: selfSender,
+                          messageId: messageId,
+                          sentDate: Date(),
+                          kind: .text(text))
+    
     // send message
     if isNewConversation {
       // create conversation in database
-      let message = Message(sender: selfSender,
-                            messageId: messageId,
-                            sentDate: Date(),
-                            kind: .text(text))
-      DatabaseManager.shared.createNewConversation(with: otherUserEmail, name: self.title ?? "User", firstMessage: message, completion: { success in
+      DatabaseManager.shared.createNewConversation(with: otherUserEmail, name: self.title ?? "User", firstMessage: message, completion: { [weak self] success in
         if success {
           print("Message sent")
+          self?.isNewConversation = false
         }
         else {
           print("Failed at send")
@@ -181,7 +184,18 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
       })
     }
     else {
+      guard let conversationId = conversationId, let name = self.title else {
+        return
+      }
       // append to existing conversation data
+      DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail, name: name, newMessage: message) { success in
+        if success {
+          print("message sent")
+        }
+        else {
+          print("failed to send")
+        }
+      }
     }
   }
   
