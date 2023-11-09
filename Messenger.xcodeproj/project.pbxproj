@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		750E73902AE2D84B0086CE48 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750E738F2AE2D84B0086CE48 /* ConversationTableViewCell.swift */; };
+		7541AE652AF6E12000B57DF5 /* NewConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7541AE642AF6E12000B57DF5 /* NewConversationCell.swift */; };
 		75424AED2ABCDC9D00282BAA /* FacebookBasics in Frameworks */ = {isa = PBXBuildFile; productRef = 75424AEC2ABCDC9D00282BAA /* FacebookBasics */; };
 		75424AEF2ABCDC9D00282BAA /* FacebookCore in Frameworks */ = {isa = PBXBuildFile; productRef = 75424AEE2ABCDC9D00282BAA /* FacebookCore */; };
 		75424AF12ABCDC9D00282BAA /* FacebookLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 75424AF02ABCDC9D00282BAA /* FacebookLogin */; };
@@ -36,6 +37,7 @@
 /* Begin PBXFileReference section */
 		03921210C6339A8CC1F5D54A /* Pods-Messenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Messenger.debug.xcconfig"; path = "Target Support Files/Pods-Messenger/Pods-Messenger.debug.xcconfig"; sourceTree = "<group>"; };
 		750E738F2AE2D84B0086CE48 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
+		7541AE642AF6E12000B57DF5 /* NewConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationCell.swift; sourceTree = "<group>"; };
 		754A75792ABBBE1800293849 /* Messenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Messenger.entitlements; sourceTree = "<group>"; };
 		755ACAEF2AAF73A4009707D6 /* Messenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Messenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		755ACAF22AAF73A4009707D6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				755ACB0B2AAF7704009707D6 /* Storyboards */,
 				755ACAFD2AAF73A6009707D6 /* LaunchScreen.storyboard */,
 				750E738F2AE2D84B0086CE48 /* ConversationTableViewCell.swift */,
+				7541AE642AF6E12000B57DF5 /* NewConversationCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				755ACB0D2AAF798C009707D6 /* LoginViewController.swift in Sources */,
+				7541AE652AF6E12000B57DF5 /* NewConversationCell.swift in Sources */,
 				755D1DB02AB754E500E057EA /* DatabaseManager.swift in Sources */,
 				755ACB0F2AAF799F009707D6 /* RegisterViewController.swift in Sources */,
 				755ACB152AAF7A52009707D6 /* NewConversationViewController.swift in Sources */,

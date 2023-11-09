@@ -100,13 +100,11 @@ class ConversationsViewController: UIViewController {
     present(navVC, animated: true)
   }
   
-  private func createNewConversation(result: [String: String]) {
+  private func createNewConversation(result: SearchResult) {
     // unwrap name and email. if we don't have them, return. minumum requirement to start a new conversation.
     // email is the thing that we're using in the database to identify users uniquely.
-    guard let name = result["name"],
-            let email = result["email"] else {
-      return
-    }
+    let name = result.name
+    let email = result.email
     
     // id: nil - 'cause there is no id yet.
     let vc = ChatViewController(with: email, id: nil)
