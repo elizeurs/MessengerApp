@@ -15,7 +15,7 @@ class ConversationTableViewCell: UITableViewCell {
   
   private let userImageView: UIImageView = {
     let imageView = UIImageView()
-    imageView.contentMode = .scaleToFill
+    imageView.contentMode = .scaleAspectFill
     imageView.layer.cornerRadius = 50
     imageView.layer.masksToBounds = true
     return imageView
@@ -81,15 +81,15 @@ class ConversationTableViewCell: UITableViewCell {
     }
   }
   
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
+//    override func awakeFromNib() {
+//        super.awakeFromNib()
+//        // Initialization code
+//    }
+//
+//    override func setSelected(_ selected: Bool, animated: Bool) {
+//        super.setSelected(selected, animated: animated)
+//
+//        // Configure the view for the selected state
+//    }
 
 }
