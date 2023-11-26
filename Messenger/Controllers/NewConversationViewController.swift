@@ -8,6 +8,7 @@
 import UIKit
 import JGProgressHUD
 
+// user search screen
 class NewConversationViewController: UIViewController {
   
   public var completion: ((SearchResult) -> (Void))?
@@ -54,7 +55,9 @@ class NewConversationViewController: UIViewController {
       tableView.dataSource = self
       
       searchBar.delegate = self
-      view.backgroundColor = .white
+//      view.backgroundColor = .white
+      // dark mode
+      view.backgroundColor = .systemBackground
       navigationController?.navigationBar.topItem?.titleView = searchBar
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel",
                                                           style: .done,
