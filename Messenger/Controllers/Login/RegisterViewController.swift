@@ -238,12 +238,16 @@ class RegisterViewController: UIViewController {
           return
         }
         
-        DatabaseManager.shared.userExists(with: email) { exists in
-          if !exists {
+        UserDefaults.standard.setValue(email, forKey: "email")
+        UserDefaults.standard.setValue("\(firstName) \(lastName)", forKey: "name")
+        
+        let chatUser = ChatAppUser(firstName: firstName,
+                                   lastName: lastName,
+                                   emailAddress: email)
+        
+//        DatabaseManager.shared.userExists(with: email) { exists in
+//          if !exists {
             //insert to database
-            let chatUser = ChatAppUser(firstName: firstName,
-                                       lastName: lastName,
-                                       emailAddress: email)
             DatabaseManager.shared.insertUser(with: chatUser) { success in
               if success {
                 // upload image
@@ -263,13 +267,11 @@ class RegisterViewController: UIViewController {
                 }
               }
             }
-          }
+            strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+          })
         }
-        
-        strongSelf.navigationController?.dismiss(animated: true, completion: nil)
-      })
-    }
-  }
+      }
+
   
   func alertUserLoginError(message: String = "Please enter all information to create a new account.") {
     let alert = UIAlertController(title: "Woops",
