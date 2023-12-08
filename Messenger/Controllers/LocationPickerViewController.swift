@@ -9,12 +9,11 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class LocationPickerViewController: UIViewController {
+final class LocationPickerViewController: UIViewController {
   
   public var completion: ((CLLocationCoordinate2D) -> Void)?
   private var coordinates: CLLocationCoordinate2D?
-  
-  private var isPackable = true
+  private var isPickable = true
   private let map: MKMapView = {
     let map = MKMapView()
     return map
@@ -22,7 +21,7 @@ class LocationPickerViewController: UIViewController {
   
   init(coordinates: CLLocationCoordinate2D?) {
     self.coordinates = coordinates
-    self.isPackable = false
+    self.isPickable = coordinates == nil
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -33,7 +32,7 @@ class LocationPickerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
       view.backgroundColor = .systemBackground
-      if isPackable {
+      if isPickable {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Send",
                                                             style: .done,
                                                             target: self,

@@ -9,7 +9,7 @@ import UIKit
 import JGProgressHUD
 
 // user search screen
-class NewConversationViewController: UIViewController {
+final class NewConversationViewController: UIViewController {
   
   public var completion: ((SearchResult) -> (Void))?
   
@@ -124,7 +124,7 @@ extension NewConversationViewController: UISearchBarDelegate {
     results.removeAll()
     spinner.show(in: view)
     
-    self.searchUsers(query: text)
+    searchUsers(query: text)
   }
   
   func searchUsers(query: String) {
@@ -160,7 +160,7 @@ extension NewConversationViewController: UISearchBarDelegate {
     
     self.spinner.dismiss()
     
-    let results: [SearchResult] = self.users.filter({
+    let results: [SearchResult] = users.filter({
       guard let email = $0["email"], email != safeEmail else {
         return false
       }
@@ -187,18 +187,14 @@ extension NewConversationViewController: UISearchBarDelegate {
   
   func updateUI() {
     if results.isEmpty {
-      self.noResultsLabel.isHidden = false
-      self.tableView.isHidden = true
+      noResultsLabel.isHidden = false
+      tableView.isHidden = true
     }
     else {
-      self.noResultsLabel.isHidden = true
-      self.tableView.isHidden = false
-      self.tableView.reloadData()
+      noResultsLabel.isHidden = true
+      tableView.isHidden = false
+      tableView.reloadData()
     }
   }
 }
 
-struct SearchResult {
-  let name: String
-  let email: String
-}
